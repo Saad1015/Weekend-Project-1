@@ -1,0 +1,402 @@
+USE [master]
+GO
+/****** Object:  Database [Weekend_Project]    Script Date: 10/15/2023 11:54:06 PM ******/
+CREATE DATABASE [Weekend_Project]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'Weekend_Project', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.SQLEXPRESS\MSSQL\DATA\Weekend_Project.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'Weekend_Project_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.SQLEXPRESS\MSSQL\DATA\Weekend_Project_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+ WITH CATALOG_COLLATION = DATABASE_DEFAULT, LEDGER = OFF
+GO
+ALTER DATABASE [Weekend_Project] SET COMPATIBILITY_LEVEL = 160
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [Weekend_Project].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [Weekend_Project] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [Weekend_Project] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [Weekend_Project] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [Weekend_Project] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [Weekend_Project] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [Weekend_Project] SET AUTO_CLOSE ON 
+GO
+ALTER DATABASE [Weekend_Project] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [Weekend_Project] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [Weekend_Project] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [Weekend_Project] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [Weekend_Project] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [Weekend_Project] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [Weekend_Project] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [Weekend_Project] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [Weekend_Project] SET  ENABLE_BROKER 
+GO
+ALTER DATABASE [Weekend_Project] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [Weekend_Project] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [Weekend_Project] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [Weekend_Project] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [Weekend_Project] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [Weekend_Project] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [Weekend_Project] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [Weekend_Project] SET RECOVERY SIMPLE 
+GO
+ALTER DATABASE [Weekend_Project] SET  MULTI_USER 
+GO
+ALTER DATABASE [Weekend_Project] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [Weekend_Project] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [Weekend_Project] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [Weekend_Project] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+ALTER DATABASE [Weekend_Project] SET DELAYED_DURABILITY = DISABLED 
+GO
+ALTER DATABASE [Weekend_Project] SET ACCELERATED_DATABASE_RECOVERY = OFF  
+GO
+ALTER DATABASE [Weekend_Project] SET QUERY_STORE = ON
+GO
+ALTER DATABASE [Weekend_Project] SET QUERY_STORE (OPERATION_MODE = READ_WRITE, CLEANUP_POLICY = (STALE_QUERY_THRESHOLD_DAYS = 30), DATA_FLUSH_INTERVAL_SECONDS = 900, INTERVAL_LENGTH_MINUTES = 60, MAX_STORAGE_SIZE_MB = 1000, QUERY_CAPTURE_MODE = AUTO, SIZE_BASED_CLEANUP_MODE = AUTO, MAX_PLANS_PER_QUERY = 200, WAIT_STATS_CAPTURE_MODE = ON)
+GO
+USE [Weekend_Project]
+GO
+/****** Object:  Table [dbo].[Courses]    Script Date: 10/15/2023 11:54:06 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Courses](
+	[CourseID] [int] IDENTITY(1,1) NOT NULL,
+	[CourseName] [varchar](50) NULL,
+ CONSTRAINT [PK__Courses__C92D7187B13A5BA8] PRIMARY KEY CLUSTERED 
+(
+	[CourseID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Students]    Script Date: 10/15/2023 11:54:06 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Students](
+	[StudentID] [int] IDENTITY(1,1) NOT NULL,
+	[FirstName] [varchar](50) NULL,
+	[LastName] [varchar](50) NULL,
+	[Age] [int] NULL,
+	[CourseID] [int] NULL,
+ CONSTRAINT [PK__Students__32C52A797ACEB9D4] PRIMARY KEY CLUSTERED 
+(
+	[StudentID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[Students]  WITH CHECK ADD  CONSTRAINT [FK_Course] FOREIGN KEY([CourseID])
+REFERENCES [dbo].[Courses] ([CourseID])
+GO
+ALTER TABLE [dbo].[Students] CHECK CONSTRAINT [FK_Course]
+GO
+/****** Object:  StoredProcedure [dbo].[AddCourse]    Script Date: 10/15/2023 11:54:06 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[AddCourse]
+    @CourseName VARCHAR(50)
+AS
+BEGIN
+    INSERT INTO Courses(CourseName)
+    VALUES (@CourseName);
+END;
+GO
+/****** Object:  StoredProcedure [dbo].[AddStudent]    Script Date: 10/15/2023 11:54:06 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[AddStudent]
+    @FirstName VARCHAR(50),
+	@LastName VARCHAR (50),
+    @Age INT,
+    @CourseID INT
+AS
+BEGIN
+    INSERT INTO Students (FirstName, LastName, Age, CourseID)
+    VALUES (@FirstName, @LastName, @Age, @CourseID);
+END;
+GO
+/****** Object:  StoredProcedure [dbo].[Courseshare]    Script Date: 10/15/2023 11:54:06 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[Courseshare]
+AS
+BEGIN
+    SELECT FirstName, LastName
+FROM Students 
+WHERE CourseID IN (SELECT CourseID FROM Students WHERE StudentID =1);
+
+END;
+GO
+/****** Object:  StoredProcedure [dbo].[Courseswithoutstudents]    Script Date: 10/15/2023 11:54:06 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[Courseswithoutstudents]
+AS
+BEGIN
+   SELECT Courses.CourseName
+FROM Courses
+LEFT JOIN Students ON Courses.CourseID = Students.CourseID
+WHERE Students.StudentID IS NULL
+END;
+GO
+/****** Object:  StoredProcedure [dbo].[DeleteCourse]    Script Date: 10/15/2023 11:54:06 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[DeleteCourse]
+@Id INT = NULL
+AS
+BEGIN
+SET NOCOUNT ON
+DELETE Courses
+WHERE CourseID = @Id
+END;
+GO
+/****** Object:  StoredProcedure [dbo].[DeleteStudent]    Script Date: 10/15/2023 11:54:06 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[DeleteStudent]
+    @ID INT
+AS
+BEGIN
+    DELETE FROM Students
+    WHERE StudentID = @ID;
+END;
+GO
+/****** Object:  StoredProcedure [dbo].[GetAllCourses]    Script Date: 10/15/2023 11:54:06 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[GetAllCourses]
+AS
+BEGIN
+    SELECT * FROM Courses;
+END;
+GO
+/****** Object:  StoredProcedure [dbo].[GetAllStudentEnrolledCourses]    Script Date: 10/15/2023 11:54:06 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[GetAllStudentEnrolledCourses]
+AS
+BEGIN
+SET NOCOUNT ON
+
+SELECT
+C.CourseID
+,C.CourseName
+,S.StudentId
+,S.FirstName
+,S.LastName
+,S.Age
+,S.CourseId as SubjectId
+from Courses C WITH(NOLOCK)
+JOIN Students S WITH(NOLOCK) ON S.CourseID = C.CourseID
+END
+GO
+/****** Object:  StoredProcedure [dbo].[GetAllStudents]    Script Date: 10/15/2023 11:54:06 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[GetAllStudents]
+AS
+BEGIN
+    SELECT * FROM Students;
+END;
+GO
+/****** Object:  StoredProcedure [dbo].[MostPopularCourse]    Script Date: 10/15/2023 11:54:06 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[MostPopularCourse]
+AS
+BEGIN
+   SELECT CourseName, COUNT(*) AS totalstudents
+FROM Courses
+JOIN Students ON Students.CourseID = Courses.CourseID
+GROUP BY CourseName
+ORDER BY totalstudents DESC
+END;
+GO
+/****** Object:  StoredProcedure [dbo].[StudentsnotEnrolled]    Script Date: 10/15/2023 11:54:06 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+CREATE PROCEDURE [dbo].[StudentsnotEnrolled]
+AS
+BEGIN
+    SELECT FirstName, LastName
+FROM Students
+WHERE CourseID IS NULL;
+
+END;
+GO
+/****** Object:  StoredProcedure [dbo].[StudentsOlder]    Script Date: 10/15/2023 11:54:06 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[StudentsOlder]
+AS
+BEGIN
+  SELECT Students.FirstName, Students.LastName
+FROM Students
+WHERE Age > (SELECT AVG(Age) FROM Students);
+END;
+GO
+/****** Object:  StoredProcedure [dbo].[Totalstudentsandaverageage]    Script Date: 10/15/2023 11:54:06 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[Totalstudentsandaverageage]
+AS
+BEGIN
+SELECT Courses.CourseName, COUNT(*) AS TotalStudents, AVG(Age) AS AverageAge
+FROM Students
+JOIN Courses ON Students.CourseID = Courses.CourseID
+GROUP BY Courses.CourseName;
+
+END;
+GO
+/****** Object:  StoredProcedure [dbo].[UpdateCourse]    Script Date: 10/15/2023 11:54:06 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[UpdateCourse]
+@Id INT = NULL,
+@CourseName NVARCHAR(MAX) = NULL
+AS
+BEGIN
+SET NOCOUNT ON
+UPDATE Courses
+SET CourseName = @CourseName
+WHERE CourseID = @Id
+END;
+GO
+/****** Object:  StoredProcedure [dbo].[UpdateStudent]    Script Date: 10/15/2023 11:54:06 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[UpdateStudent]
+@Id INT = NULL,
+@FirstName NVARCHAR(MAX) = NULL,
+@LastName NVARCHAR(MAX) = NULL,
+@Age INT = NULL,
+@CourseId INT = null
+AS
+BEGIN
+SET NOCOUNT ON
+UPDATE Students
+SET 
+FirstName = @FirstName,
+LastName = @LastName,
+Age = @Age,
+CourseID = @CourseId
+WHERE StudentID= @Id
+END;
+GO
+/****** Object:  StoredProcedure [dbo].[UpdateStudentRecord]    Script Date: 10/15/2023 11:54:06 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[UpdateStudentRecord]
+    @ID INT,
+    @NewAge INT
+AS
+BEGIN
+    UPDATE Students
+    SET Age = @NewAge
+    WHERE StudentID = @ID;
+END;
+GO
+/****** Object:  StoredProcedure [dbo].[usp_GetStudentsOlderThanTwenty]    Script Date: 10/15/2023 11:54:06 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[usp_GetStudentsOlderThanTwenty]
+AS
+BEGIN
+SET NOCOUNT ON
+SELECT * FROM Students WITH(NOLOCK)
+WHERE Age > 20
+END
+GO
+/****** Object:  StoredProcedure [dbo].[Youngestandoldeststudent]    Script Date: 10/15/2023 11:54:06 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[Youngestandoldeststudent]
+AS
+BEGIN
+    SELECT Courses.CourseName,
+MIN(Students.Age) AS YoungestStudent,
+MAX(Students.Age) AS OldestStudent
+FROM Students JOIN Courses ON Students.CourseID = Courses.CourseID
+GROUP BY Courses.CourseName;
+
+END;
+GO
+USE [master]
+GO
+ALTER DATABASE [Weekend_Project] SET  READ_WRITE 
+GO
